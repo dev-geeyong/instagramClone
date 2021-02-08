@@ -16,6 +16,8 @@
 		4671D33E25C90FDB00DE28CF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4671D33D25C90FDB00DE28CF /* Extensions.swift */; };
 		4671D34725C9849200DE28CF /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4671D34625C9849200DE28CF /* LoginController.swift */; };
 		4671D34A25C984AC00DE28CF /* RegistrationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4671D34925C984AC00DE28CF /* RegistrationController.swift */; };
+		46B3782E25D1440100763D00 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B3782D25D1440100763D00 /* CustomTextField.swift */; };
+		46B3783125D15DD300763D00 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B3783025D15DD300763D00 /* AuthenticationViewModel.swift */; };
 		46F6927025C1301B001AF02C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F6926F25C1301B001AF02C /* AppDelegate.swift */; };
 		46F6927225C1301B001AF02C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F6927125C1301B001AF02C /* SceneDelegate.swift */; };
 		46F6927425C1301B001AF02C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F6927325C1301B001AF02C /* ViewController.swift */; };
@@ -38,6 +40,8 @@
 		4671D33D25C90FDB00DE28CF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4671D34625C9849200DE28CF /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		4671D34925C984AC00DE28CF /* RegistrationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
+		46B3782D25D1440100763D00 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		46B3783025D15DD300763D00 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		46F6926C25C1301B001AF02C /* instagramClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instagramClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46F6926F25C1301B001AF02C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		46F6927125C1301B001AF02C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -134,6 +138,7 @@
 		46F6928825C1312C001AF02C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				46B3783025D15DD300763D00 /* AuthenticationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -142,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				4671D33A25C90F4400DE28CF /* FeedCell.swift */,
+				46B3782D25D1440100763D00 /* CustomTextField.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -291,6 +297,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46B3782E25D1440100763D00 /* CustomTextField.swift in Sources */,
 				46F6927425C1301B001AF02C /* ViewController.swift in Sources */,
 				4671D34725C9849200DE28CF /* LoginController.swift in Sources */,
 				4671D33B25C90F4400DE28CF /* FeedCell.swift in Sources */,
@@ -298,6 +305,7 @@
 				4671D33525C8EFBA00DE28CF /* NotificationController.swift in Sources */,
 				4671D32F25C8EF9400DE28CF /* SearchController.swift in Sources */,
 				46F6927025C1301B001AF02C /* AppDelegate.swift in Sources */,
+				46B3783125D15DD300763D00 /* AuthenticationViewModel.swift in Sources */,
 				4671D33825C8EFDD00DE28CF /* ProfileController.swift in Sources */,
 				4671D32C25C8EF8400DE28CF /* FeedController.swift in Sources */,
 				46F6928F25C131EF001AF02C /* MainTabController.swift in Sources */,
