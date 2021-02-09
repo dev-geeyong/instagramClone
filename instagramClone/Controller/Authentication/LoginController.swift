@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol AuthenticationDelegate: class {
+    func authenticationDidComplete()
+}
 class LoginController: UIViewController {
     
-    var viewModel = LoginViewModel()
+    
     //MARK: - Properties
+    var viewModel = LoginViewModel()
+    weak var delegate: AuthenticationDelegate?
+    
     private let iconImage: UIImageView = {
        let iv = UIImageView(image: #imageLiteral(resourceName: "Instagram_logo_white"))
         iv.contentMode = .scaleAspectFill
@@ -70,11 +76,13 @@ class LoginController: UIViewController {
                 print("debug failed to log user in \(error.localizedDescription)")
                 return
             }
-            self.dismiss(animated: true, completion: nil)
+            self.delegate?.authenticationDidComplete()
+        
         }
     }
     @objc func showSignUpPage(){
         let page = RegistrationController()
+        page.delegate = delegate
         navigationController?.pushViewController(page, animated: true)
         
     }
