@@ -11,12 +11,13 @@ class RegistrationController: UIViewController {
     
     //MARK: - Properties
     private var viewModel = RegistrationViewModel()
+    private var profileImage: UIImage?
     private let pushImageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "plus_photo"), for: .normal)
         button.tintColor = .white
         button.addTarget(self, action: #selector(setUserImage), for: .touchUpInside)
-        
+         
         return button
     }()
     private let emailTextField: CustomTextField = {
@@ -42,6 +43,7 @@ class RegistrationController: UIViewController {
         button.layer.cornerRadius = 5
         button.setHeight(50)
         button.isEnabled = false
+        button.addTarget(self, action: #selector(pushSignUpButton), for: .touchUpInside)
         return button
     }()
     private let alreadyAccountButton: UIButton = {
@@ -61,6 +63,22 @@ class RegistrationController: UIViewController {
         picker.allowsEditing = true
         
         present(picker, animated: true, completion: nil)
+    }
+    @objc func pushSignUpButton(){
+        guard let email = emailTextField.text else {return}
+        guard let password = passwordTextField.text else {return}
+        guard let fullname = fullnameTextField.text else {return}
+        guard let username = usernameTextField.text?.lowercased() else {return}
+        guard let profileImage = self.profileImage else {return}
+        
+        let credentials = AuthCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
+        AuthService.registerUser(withCredential: credentials) { error in
+            if let error = error {
+                print("debug failed to register user \(error.localizedDescription)")
+            }
+            
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     @objc func textDidChange(sender: UITextField){
@@ -84,6 +102,7 @@ class RegistrationController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        configureNotificationObservers()
     }
     
     //MARK: - Helpers
@@ -132,6 +151,7 @@ extension RegistrationController: UIImagePickerControllerDelegate, UINavigationC
         guard let selectImage = info[.editedImage] as? UIImage else {
             return
         }
+        profileImage = selectImage
         pushImageButton.layer.cornerRadius = pushImageButton.frame.width / 2
         pushImageButton.layer.masksToBounds = true
         pushImageButton.layer.borderColor = UIColor.white.cgColor
