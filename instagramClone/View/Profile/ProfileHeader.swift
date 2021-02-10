@@ -8,6 +8,9 @@
 import UIKit
 import SDWebImage
 
+protocol ProfileHeaderDelegate: class {
+    func header(_ profileHeader: ProfileHeader, didTapActionButtonFor user: User)
+}
 class ProfileHeader: UICollectionReusableView{
     
     //MARK: - Properties
@@ -16,6 +19,8 @@ class ProfileHeader: UICollectionReusableView{
         didSet{configure()}
         
     }
+    weak var delegate: ProfileHeaderDelegate?
+    
     
     private let profileImageVIew: UIImageView = {
         let iv = UIImageView()
@@ -31,7 +36,7 @@ class ProfileHeader: UICollectionReusableView{
     }()
     private lazy var editProfileFollowButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("프로필 수정", for: .normal)
+        button.setTitle("Loading", for: .normal)
         button.layer.cornerRadius = 3
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 0.5
@@ -44,21 +49,21 @@ class ProfileHeader: UICollectionReusableView{
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.attributedText = attributedStatText(value: 5, label: "게시물")
+        
         return label
     }()
     private lazy var followersLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.attributedText = attributedStatText(value: 2, label: "팔로워")
+        
         return label
     }()
     private lazy var followingLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.attributedText = attributedStatText(value: 1, label: "팔로잉")
+        
         return label
     }()
     let gridButton: UIButton = {
@@ -130,7 +135,10 @@ class ProfileHeader: UICollectionReusableView{
     //MARK: - Actions
     
     @objc func pushEditProfileButton(){
-        print("button!")
+        guard let viewModel = viewModel else {
+            return
+        }
+        delegate?.header(self, didTapActionButtonFor: viewModel.user)
     }
     
     //MARK: - Helpers
@@ -139,12 +147,14 @@ class ProfileHeader: UICollectionReusableView{
         guard let viewModel = viewModel else { return }
         nameLabel.text = viewModel.fullname
         profileImageVIew.sd_setImage(with: viewModel.profileImageUrl)
+        editProfileFollowButton.setTitle(viewModel.followButtonText, for: .normal)
+        editProfileFollowButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
+        editProfileFollowButton.backgroundColor = viewModel.followButtonBackgroundColor
+        
+        postsLabel.attributedText = viewModel.numberOfPost
+        followersLabel.attributedText = viewModel.numberOfFollowers
+        followingLabel.attributedText = viewModel.numberOfFollwing
         
     }
-    func attributedStatText(value: Int, label: String) -> NSAttributedString{
-        let attributedText = NSMutableAttributedString(string: "\(value)\n", attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedText.append(NSAttributedString(string: label, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray]))
-        
-        return attributedText
-    }
+
 }
