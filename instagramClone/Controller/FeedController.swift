@@ -9,14 +9,20 @@ import  UIKit
 import Firebase
 private let reuseIdentifier = "Cell"
 
+
 class FeedController: UICollectionViewController {
-//MARK: - Lifecycle
+    //MARK: - Lifecycle
+    private var posts = [Post]()
+    
+    var selectPost: Post?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        fetchPosts()
     }
-
-//MARK: - Actions
+    
+    //MARK: - Actions
     @objc func pushLogoutButton(){
         do{
             try Auth.auth().signOut()
@@ -28,34 +34,62 @@ class FeedController: UICollectionViewController {
         }catch{
             print("debug: failed to sgin out")
         }
-
+        
     }
-//MARK: - helpers
+    @objc func handeleRefresh(){
+        posts.removeAll()
+        fetchPosts()
+    }
+    //MARK: - API
+    func fetchPosts(){
+        guard selectPost == nil else {return}
+        PostService.fetchPosts {posts in
+            self.posts = posts
+            self.collectionView.refreshControl?.endRefreshing()
+            self.collectionView.reloadData()
+        }
+    }
+    //MARK: - helpers
+    
     func configureUI(){
         collectionView.backgroundColor = .white
         collectionView.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        if selectPost == nil{
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout",
+                                                               style: .plain,
+                                                               target: self,
+                                                               action: #selector(pushLogoutButton))
+            navigationItem.title = "Feed"
+            
+            let refresher = UIRefreshControl()
+            refresher.addTarget(self, action: #selector(handeleRefresh), for: .valueChanged)
+            collectionView.refreshControl = refresher
+            
+        }
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout",
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(pushLogoutButton))
-        navigationItem.title = "Feed"
     }
     
 }
 
 
-    
+
 
 //MARK: - UICollectionViewDataSource
 
 extension FeedController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return selectPost == nil ? posts.count : 1
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
+        cell.delegate = self
+        if let selectPost = selectPost {
+            cell.viewModel = PostViewModel(post: selectPost)
+        }else{
+            cell.viewModel = PostViewModel(post: posts[indexPath.row])
+            
+        }
         return cell
     }
 }
@@ -73,3 +107,10 @@ extension FeedController: UICollectionViewDelegateFlowLayout{
     }
 }
 
+extension FeedController: FeedCellDelegate{
+    func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
+        let controller = CommentController(post: post)
+        navigationController?.pushViewController(controller, animated: true)
+        
+    }
+}

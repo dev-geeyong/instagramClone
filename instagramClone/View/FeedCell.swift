@@ -7,23 +7,31 @@
 
 import UIKit
 
+protocol FeedCellDelegate: class {
+    func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post)
+}
+
 class FeedCell: UICollectionViewCell{
     //MARK: - Properties
     
+    var viewModel: PostViewModel? {
+        didSet {configure()}
+    }
+    
+    weak var delegate: FeedCellDelegate?
     private let profileImageView: UIImageView = {
         
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true //false이면 이미지를 코너를 radius를 만드는데 안에 텍스트를 유지하고 만듬
         iv.isUserInteractionEnabled = true //isUserInteractionEnabled는 유저의 이벤트가 event queue로 부터 무시되고 삭제됐는지 판단하는 Boolean 값입니다. true = event는 정상적으로 view에게 전달
-        iv.image = #imageLiteral(resourceName: "venom-7")
+        iv.backgroundColor = .lightGray
         return iv
     }()
     
     private lazy var usernameButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitleColor(.black, for: .normal)
-        button.setTitle("venom", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
         button.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
         return button
@@ -52,17 +60,16 @@ class FeedCell: UICollectionViewCell{
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "comment"), for: .normal)
         button.tintColor = .black
+        button.addTarget(self, action: #selector(didTapComments), for: .touchUpInside)
         return button
     }()
     private var likeLabel: UILabel = {
         let label = UILabel()
-        label.text = "1 like"
         label.font = UIFont.boldSystemFont(ofSize: 13)
         return label
     }()
     private var captionLabel: UILabel = {
         let label = UILabel()
-        label.text = "댓글 테스트"
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
@@ -110,11 +117,23 @@ class FeedCell: UICollectionViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     //MARK: - Actions
-    
+    @objc func didTapComments(){
+        guard let viewModel = viewModel else{return}
+        delegate?.cell(self, wantsToShowCommentsFor: viewModel.post)
+    }
     @objc func didTapUsername(){
         print("did  tap username")
     }
     //MARK: - Helpers
+    func configure(){
+        guard let viewModel = viewModel else{return}
+        captionLabel.text = viewModel.caption
+        postImageVIew.sd_setImage(with: viewModel.imageURL)
+        likeLabel.text = viewModel.likeString
+        profileImageView.sd_setImage(with: viewModel.userProfileImageUrl)
+        usernameButton.setTitle(viewModel.username, for: .normal)
+        
+    }
     func configureActionButton(){
         let stackView = UIStackView(arrangedSubviews: [likeButton,commentButton,shareButton])
         stackView.axis = .horizontal

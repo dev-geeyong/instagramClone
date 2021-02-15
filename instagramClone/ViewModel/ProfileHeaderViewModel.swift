@@ -37,7 +37,7 @@ struct ProfileHeaderViewModel {
         return attributedStatText(value: user.stats.following, label: "following")
     }
     var numberOfPost: NSAttributedString{
-        return attributedStatText(value: 5, label: "post")
+        return attributedStatText(value: user.stats.posts, label: "post")
     }
     init(user: User){
         self.user = user
