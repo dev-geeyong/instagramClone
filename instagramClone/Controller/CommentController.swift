@@ -13,7 +13,7 @@ class CommentController: UICollectionViewController{
     
     //MARK: - Properties
     private let post: Post
-    
+    private var comments = [Comment]()
     private lazy var commnetInputView: CommnetKeyboardView = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
         let cv = CommnetKeyboardView(frame: frame)
@@ -32,6 +32,7 @@ class CommentController: UICollectionViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
+        fetchComments()
     }
     
     override var inputAccessoryView: UIView?{ //키보드커스텀
@@ -49,7 +50,14 @@ class CommentController: UICollectionViewController{
         super.viewWillDisappear(animated)
         tabBarController?.tabBar.isHidden = false
     }
+    //MARK: - API
     
+    func fetchComments(){
+        CommentService.fetchComments(forPost: post.postId) { comments in
+            self.comments = comments
+            self.collectionView.reloadData()
+        }
+    }
     //MARK: - Helpers
     func configureCollectionView(){
         collectionView.backgroundColor = .white
@@ -64,10 +72,11 @@ class CommentController: UICollectionViewController{
 //MARK: - UICollectionViewControllerdatasorce
 extension CommentController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return comments.count
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CommentCell
+        cell.viewModel = CommentViewModel(comment: comments[indexPath.row])
         
         return cell
     }
@@ -76,7 +85,22 @@ extension CommentController {
 
 extension CommentController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 80)
+        let viewModel = CommentViewModel(comment: comments[indexPath.row])
+        //댓글 동적 셀 높이 설정
+        let height = viewModel.size(forWidth: view.frame.width).height + 32
+        return CGSize(width: view.frame.width, height: height)
+    }
+}
+
+//MARK: - UICollectionViewDelegate
+extension CommentController {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let uid = comments[indexPath.row].uid
+        UserService.fetchUser(withUid: uid) { user in
+            let controller = ProfileController(user: user)
+            self.navigationController?.pushViewController(controller, animated: true)
+            
+        }
     }
 }
 //MARK: - CommnetKeyboardViewDelegate
@@ -89,6 +113,8 @@ extension CommentController: CommnetKeyboardViewDelegate{
         CommentService.uploadComment(comment: comment, postID: post.postId, user: user) { error in
             self.showLoader(false)
             inputView.clearCommnetTextView()
+            
+            NotificationService.uploadNotification(toUid: self.post.ownerUid, fromUser: user, type: .comment, post: self.post)
         }
     }
     

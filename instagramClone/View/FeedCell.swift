@@ -9,6 +9,8 @@ import UIKit
 
 protocol FeedCellDelegate: class {
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post)
+    func cell(_ cell: FeedCell, didLike post: Post)
+    func cell(_ cell: FeedCell, wantsToShowProfileFor uid: String)
 }
 
 class FeedCell: UICollectionViewCell{
@@ -19,13 +21,18 @@ class FeedCell: UICollectionViewCell{
     }
     
     weak var delegate: FeedCellDelegate?
-    private let profileImageView: UIImageView = {
+    private lazy var profileImageView: UIImageView = {
         
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true //false이면 이미지를 코너를 radius를 만드는데 안에 텍스트를 유지하고 만듬
         iv.isUserInteractionEnabled = true //isUserInteractionEnabled는 유저의 이벤트가 event queue로 부터 무시되고 삭제됐는지 판단하는 Boolean 값입니다. true = event는 정상적으로 view에게 전달
         iv.backgroundColor = .lightGray
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapUsername))
+        iv.isUserInteractionEnabled = true
+        iv.addGestureRecognizer(tap)
+        
         return iv
     }()
     
@@ -42,12 +49,15 @@ class FeedCell: UICollectionViewCell{
         iv.clipsToBounds = true //false이면 이미지를 코너를 radius를 만드는데 안에 텍스트를 유지하고 만듬
         iv.isUserInteractionEnabled = true //isUserInteractionEnabled는 유저의 이벤트가 event queue로 부터 무시되고 삭제됐는지 판단하는 Boolean 값입니다. true = event는 정상적으로 view에게 전달
         iv.image = #imageLiteral(resourceName: "venom-7")
+        
+        
         return iv
     }()
-    private lazy var likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "like_unselected"), for: .normal)
         button.tintColor = .black
+        button.addTarget(self, action: #selector(didtapLikeButton), for: .touchUpInside)
         return button
     }()
     private lazy var shareButton: UIButton = {
@@ -122,7 +132,15 @@ class FeedCell: UICollectionViewCell{
         delegate?.cell(self, wantsToShowCommentsFor: viewModel.post)
     }
     @objc func didTapUsername(){
-        print("did  tap username")
+        guard let viewModel = viewModel else {
+            return
+        }
+        delegate?.cell(self, wantsToShowProfileFor: viewModel.post.ownerUid)
+    }
+    @objc func didtapLikeButton(){
+        guard let viewModel = viewModel else{return}
+        delegate?.cell(self, didLike: viewModel.post)
+        
     }
     //MARK: - Helpers
     func configure(){
@@ -132,6 +150,9 @@ class FeedCell: UICollectionViewCell{
         likeLabel.text = viewModel.likeString
         profileImageView.sd_setImage(with: viewModel.userProfileImageUrl)
         usernameButton.setTitle(viewModel.username, for: .normal)
+        
+        likeButton.tintColor = viewModel.likeButtonTintColor
+        likeButton.setImage(viewModel.likeButtonImage, for: .normal)
         
     }
     func configureActionButton(){
