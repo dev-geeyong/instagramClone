@@ -23,8 +23,10 @@ struct PostService {
                         "ownerImageUrl" : user.profileImageURL,
                         "ownerUsername" : user.username,
                         "ownerUid": uid] as [String:Any]
+            let docRef = COLLECTION_POSTS.addDocument(data: data, completion: completion)
             
-            COLLECTION_POSTS.addDocument(data: data, completion: completion)
+            self.updateUserFeedAfterPost(postId: docRef.documentID)
+            
             
         }
         
@@ -44,9 +46,7 @@ struct PostService {
             guard let documents = snapshot?.documents else{return}
             
             var posts = documents.map({Post(postId: $0.documentID, dictionary: $0.data())})
-            posts.sort{ ( post1, post2) -> Bool in
-                return post1.timestamp.seconds > post2.timestamp.seconds
-            }
+            posts.sort(by: { $0.timestamp.seconds > $1.timestamp.seconds})
             completion(posts)
         }
         
@@ -87,5 +87,50 @@ struct PostService {
             completion(didLike) //ture = 해당 계정 user-likes에 해당 게시물이 들어있다.
         }
         
+    }
+    static func fetchFeedPosts(completion: @escaping([Post])->Void){
+        guard let uid = Auth.auth().currentUser?.uid else{return}
+        var posts = [Post]()
+        
+        COLLECTION_USERS.document(uid).collection("user-feed").getDocuments { snapshot, error in
+            snapshot?.documents.forEach{ document in
+                fetchPosts(withPostId: document.documentID) { post in
+                    posts.append(post)
+                    posts.sort(by: { $0.timestamp.seconds > $1.timestamp.seconds})
+                    completion(posts)
+                }
+            }
+        }
+    }
+    static func updateUserFeedAfterFollowing(user: User, didFollow: Bool){
+        guard let uid = Auth.auth().currentUser?.uid else{ return}
+        
+        let query = COLLECTION_POSTS.whereField("ownerUid", isEqualTo: user.uid)
+        //프로필에 들어가(팔로우)누른 user.uid가 작성한 글들을 ownerUid로 찾아서 그 포스트의 각 도큐먼트 아이디를 접속한 유저user-feed에 저장
+        query.getDocuments { snapshot, error in
+            guard let documents = snapshot?.documents else {return}
+            
+            let docIDs = documents.map({$0.documentID})
+            docIDs.forEach{ id in
+                if didFollow {
+                    COLLECTION_USERS.document(uid).collection("user-feed").document(id).setData([:])
+                }else{
+                    COLLECTION_USERS.document(uid).collection("user-feed").document(id).delete()
+                }
+                
+            }
+        }
+    }
+    static func updateUserFeedAfterPost(postId: String){
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot,_ in
+            guard let documents = snapshot?.documents else {return} //해당 유저를 팔로우하고있는사람들
+            
+            documents.forEach { document in
+                COLLECTION_USERS.document(document.documentID).collection("user-feed").document(postId).setData([:])
+            }
+            COLLECTION_USERS.document(uid).collection("user-feed").document(postId).setData([:])
+        }
     }
 }

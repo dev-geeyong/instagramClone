@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		462C398625DCB4F5004C9AC4 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462C398525DCB4F5004C9AC4 /* ResetPasswordController.swift */; };
 		4671D32C25C8EF8400DE28CF /* FeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4671D32B25C8EF8400DE28CF /* FeedController.swift */; };
 		4671D32F25C8EF9400DE28CF /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4671D32E25C8EF9400DE28CF /* SearchController.swift */; };
 		4671D33225C8EFA700DE28CF /* ImageSelectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4671D33125C8EFA700DE28CF /* ImageSelectorController.swift */; };
@@ -57,6 +58,7 @@
 /* Begin PBXFileReference section */
 		12F0BC33C96F17D6C4424F2C /* Pods-instagramClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-instagramClone.debug.xcconfig"; path = "Target Support Files/Pods-instagramClone/Pods-instagramClone.debug.xcconfig"; sourceTree = "<group>"; };
 		2C01DF311179DB99B77A7553 /* Pods_instagramClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_instagramClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		462C398525DCB4F5004C9AC4 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
 		4671D32B25C8EF8400DE28CF /* FeedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedController.swift; sourceTree = "<group>"; };
 		4671D32E25C8EF9400DE28CF /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		4671D33125C8EFA700DE28CF /* ImageSelectorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelectorController.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			children = (
 				4671D34625C9849200DE28CF /* LoginController.swift */,
 				4671D34925C984AC00DE28CF /* RegistrationController.swift */,
+				462C398525DCB4F5004C9AC4 /* ResetPasswordController.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 				4698B6AC25D26B6600C36379 /* ProfileHeaderViewModel.swift in Sources */,
 				4698B6C625DA156200C36379 /* InputTextView.swift in Sources */,
 				4698B6A625D25EDB00C36379 /* Constaants.swift in Sources */,
+				462C398625DCB4F5004C9AC4 /* ResetPasswordController.swift in Sources */,
 				4671D32C25C8EF8400DE28CF /* FeedController.swift in Sources */,
 				4698B6B225D2D2E700C36379 /* UserCellViewModel.swift in Sources */,
 				46F6928F25C131EF001AF02C /* MainTabController.swift in Sources */,

@@ -57,6 +57,7 @@ class LoginController: UIViewController {
     private let forgotPasswordButton: UIButton = {
         let button = UIButton(type: .system)
         button.attributedTitle(firstPart: "Forgot your password?  ", secondPart: "Get help signing in.")
+        button.addTarget(self, action: #selector(handleShowResetPassword), for: .touchUpInside)
         return button
     }()
     //MARK: - Lifecycle
@@ -79,6 +80,11 @@ class LoginController: UIViewController {
             self.delegate?.authenticationDidComplete()
         
         }
+    }
+    @objc func handleShowResetPassword(){
+        let controller = ResetPasswordController()
+        controller.delegate = self
+        navigationController?.pushViewController(controller, animated: true)
     }
     @objc func showSignUpPage(){
         let page = RegistrationController()
@@ -134,6 +140,13 @@ extension LoginController: FormViewModel{
         loginButton.backgroundColor = viewModel.buttonBackgroundColor
         loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
         loginButton.isEnabled = true
+    }
+    
+}
+extension LoginController: ResetPasswordControllerDelegate{
+    func controllerDidSendResetPasswordLink(_ controller: ResetPasswordController) {
+        navigationController?.popViewController(animated: true)
+        showMessage(withTitle: "성공", message: "해당 이메일으로 리셋된 비밀번호를 전송했습니다.")
     }
     
     
