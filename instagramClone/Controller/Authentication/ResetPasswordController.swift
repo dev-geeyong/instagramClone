@@ -16,7 +16,7 @@ class ResetPasswordController: UIViewController {
     
     private var viewModel = ResetPasswordViewModel()
     private let iconImage: UIImageView = {
-       let iv = UIImageView(image: #imageLiteral(resourceName: "Instagram_logo_white"))
+       let iv = UIImageView(image: #imageLiteral(resourceName: "search_selected"))
         iv.contentMode = .scaleAspectFill
         return iv
     }()
