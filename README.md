@@ -8,3 +8,4 @@
 #### - 사용스킬 : iOS, Swift, Firebase, MVVM 패턴, 스토리보드 사용X
 
 
+![image](https://user-images.githubusercontent.com/55137069/109421934-c48a4100-7a1c-11eb-9d92-f17c44c458d2.png)
