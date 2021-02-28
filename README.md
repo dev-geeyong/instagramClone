@@ -7,5 +7,5 @@
 #### - 기여도 : iOS(100%)
 #### - 사용스킬 : iOS, Swift, Firebase, MVVM 패턴, 스토리보드 사용X
 
-#### - 로그인
+#### - 로그인/회원가입/비밀번호 초기화
 ![Feb-28-2021 23-45-02](https://user-images.githubusercontent.com/55137069/109422477-0c11cc80-7a1f-11eb-9cad-3d910a69a631.gif)
