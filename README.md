@@ -7,5 +7,6 @@
 #### - 기여도 : iOS(100%)
 #### - 사용스킬 : iOS, Swift, Firebase, MVVM 패턴, 스토리보드 사용X
 
+!(image)[http://drive.google.com/uc?export=view&id=1rzcGce0o3SucrS2sFROyqXyuB5dtQABV]
 
-![image](https://user-images.githubusercontent.com/55137069/109421934-c48a4100-7a1c-11eb-9d92-f17c44c458d2.png)
+
